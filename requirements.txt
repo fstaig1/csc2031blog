@@ -1,0 +1,12 @@
+click
+Flask
+itsdangerous
+Jinja2
+MarkupSafe
+pip
+setuptools
+Werkzeug
+wheel
+WTForms
+Flask-WTF
+email-validator
