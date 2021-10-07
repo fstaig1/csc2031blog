@@ -10,3 +10,5 @@ wheel
 WTForms
 Flask-WTF
 email-validator
+SQLAlchemy
+flask_sqlalchemy
