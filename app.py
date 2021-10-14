@@ -3,7 +3,6 @@ import socket
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
-
 # CONFIG
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'LongAndRandomSecretKey'
@@ -33,6 +32,7 @@ def page_not_found(error):
 @app.errorhandler(500)
 def internal_error(error):
     return render_template('500.html'), 500
+
 
 # MAIN
 if __name__ == '__main__':
