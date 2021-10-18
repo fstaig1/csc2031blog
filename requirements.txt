@@ -14,3 +14,4 @@ SQLAlchemy
 flask_sqlalchemy
 pycryptodome
 cryptography
+Flask-Login
