@@ -10,6 +10,9 @@ app.config['SECRET_KEY'] = 'LongAndRandomSecretKey'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+app.config['RECAPTCHA_PUBLIC_KEY'] = "6LfaX9ocAAAAABWeVBjjXEZTI5tmcxVkO0fDi32J"
+app.config['RECAPTCHA_PRIVATE_KEY'] = "6LfaX9ocAAAAAOxnUEOo0NLzPjxI693BOmeuI9gj"
+
 db = SQLAlchemy(app)
 
 

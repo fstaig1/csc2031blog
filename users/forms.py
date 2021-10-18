@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 import re
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import Required, Email, Length, EqualTo, ValidationError
@@ -16,9 +16,18 @@ class RegisterForm(FlaskForm):
     username = StringField(validators=[Required(), Email()])
     password = PasswordField(validators=[Required(), Length(min=8, max=15, message="Password must be between 8 and 15 characters in length."), character_check])
     confirm_password = PasswordField(validators=[Required(), EqualTo("password", message="Both password fields must be equal.")])
+    pinkey = StringField(validators=[Required(), character_check, Length(max=32, min=32, message="Length of PIN key must be 32.")])
     submit = SubmitField()
 
     def validate_password(self, password):
         p = re.compile(r'(?=.*\d)(?=.*[A-Z])')
         if not p.match(self.password.data):
             raise ValidationError("Password must contain at least 1 digit and 1 uppercase letter.")
+
+
+class LoginForm(FlaskForm):
+    username = StringField(validators=[Required(), Email()])
+    password = PasswordField(validators=[Required()])
+    pinkey = StringField(validators=[Required()])
+    recaptcha = RecaptchaField()
+    submit = SubmitField()

@@ -25,6 +25,7 @@ class User(db.Model, UserMixin):
 
     # crypto key for user's posts
     postkey = db.Column(db.BLOB)
+    pinkey = db.Column(db.String(100), nullable=False)
 
     registered_on = db.Column(db.DateTime, nullable=False)
     last_logged_in = db.Column(db.DateTime, nullable=True)
@@ -32,10 +33,11 @@ class User(db.Model, UserMixin):
 
     blogs = db.relationship('Post')
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, pinkey):
         self.username = username
         self.password = generate_password_hash(password)
         self.postkey = base64.urlsafe_b64encode(scrypt(password, str(get_random_bytes(32)), 32, N=2 ** 14, r=8, p=1))
+        self.pinkey = pinkey
         self.registered_on = datetime.now()
         self.last_logged_in = None
         self.current_logged_in = None
@@ -69,8 +71,8 @@ class Post(db.Model):
 def init_db():
     db.drop_all()
     db.create_all()
-    new_user = User(username='user1@test.com', password='mysecretpassword')
-    newuser2 = User(username='ac@abc.com', password='user2passwordwoop')
+    new_user = User(username='user1@test.com', password='mysecretpassword', pinkey='BFB5S34STBLZCOB22K6PPYDCMZMH46OJ')
+    newuser2 = User(username='abc@abc.com', password='Password123', pinkey='3A3SY3EOT5VOB5N35JYVRNCU5WU5D4FR')
     db.session.add(new_user)
     db.session.add(newuser2)
     db.session.commit()
