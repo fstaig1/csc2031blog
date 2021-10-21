@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template
+from flask_login import login_required, current_user
 from sqlalchemy import desc
 from app import db
 from blog.forms import PostForm
@@ -7,12 +8,11 @@ import copy
 
 blog_blueprint = Blueprint('blog', __name__, template_folder='templates')
 
-user = User.query.first()
-postkey = user.postkey
 
 
 
 @blog_blueprint.route('/blog')
+@login_required
 def blog():
     posts = Post.query.order_by(desc('id')).all()
 
@@ -24,18 +24,20 @@ def blog():
 
     # decrypt each copied post object and add it to decrypted_posts array.
     for p in post_copies:
-         p.view_post(postkey)
-         decrypted_posts.append(p)
+        user = User.query.filter_by(username=p.username).first()
+        p.view_post(user.postkey)
+        decrypted_posts.append(p)
 
     return render_template('blog.html', posts=decrypted_posts)
 
 
 @blog_blueprint.route('/create', methods=('GET', 'POST'))
+@login_required
 def create():
     form = PostForm()
 
     if form.validate_on_submit():
-        new_post = Post(username=user.username, title=form.title.data, body=form.body.data, postkey=postkey)
+        new_post = Post(username=current_user.username, title=form.title.data, body=form.body.data, postkey=current_user.postkey)
 
         db.session.add(new_post)
         db.session.commit()
@@ -46,6 +48,7 @@ def create():
 
 
 @blog_blueprint.route('/<int:id>/update', methods=('GET', 'POST'))
+@login_required
 def update(id):
     post = Post.query.filter_by(id=id).first()
     if not post:
@@ -54,7 +57,7 @@ def update(id):
     form = PostForm()
 
     if form.validate_on_submit():
-        post.update_post(form.title.data, form.body.data, postkey)
+        post.update_post(form.title.data, form.body.data, current_user.postkey)
 
         return blog()
 
@@ -62,7 +65,7 @@ def update(id):
     post_copy = copy.deepcopy(post)
 
     # decrypt copy of post object.
-    post_copy.view_post(postkey)
+    post_copy.view_post(current_user.postkey)
 
     # set update form with title and body of copied post object
     form.title.data = post_copy.title
@@ -71,6 +74,7 @@ def update(id):
 
 
 @blog_blueprint.route('/<int:id>/delete')
+@login_required
 def delete(id):
     Post.query.filter_by(id=id).delete()
     db.session.commit()
