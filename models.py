@@ -57,6 +57,7 @@ class Post(db.Model):
         self.created = datetime.now()
         self.title = encrypt(title, postkey)
         self.body = encrypt(body, postkey)
+        self.postkey = postkey
 
     def update_post(self, title, body, postkey):
         self.title = encrypt(title, postkey)
