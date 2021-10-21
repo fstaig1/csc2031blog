@@ -20,7 +20,7 @@ class RegisterForm(FlaskForm):
     submit = SubmitField()
 
     def validate_password(self, password):
-        p = re.compile(r'(?=.*\d)(?=.*[A-Z])(?=.*\W)')
+        p = re.compile(r'(?=.*\d)(?=.*[A-Z])')
         if not p.match(self.password.data):
             raise ValidationError("Password must contain at least 1 digit and 1 uppercase letter.")
 
